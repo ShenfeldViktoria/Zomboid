@@ -9,15 +9,11 @@
 
 # Структура CSV-файлу:
 CSV-файл повинен мати наступні колонки:
-------------------------------------------------------------------------
-|ID    | Name                 | Type            | Condition  | Amount  |
-|--------------------------------------------------------------------- |
-|1     | Hummer               | Tool            | Mint       | 10      |
-|2     | Nails                | Fasteners       | Good       | 450     |
-|2     | Nails                | Fasteners       | Bad        | 100     |
-|3     | Bat                  | Weapon          | Bad        | 2       |
-|4     | Bulb                 | Fasteners       | Good       | 15      |
-------------------------------------------------------------------------
+ID	Name	Type	Condition	Amount
+1	Hummer	Tool	Mint	10
+2	Nails	Fasteners	Good	450
+3	Bat	Weapon	Bad	2
+4	Bulb	Fasteners	Good	15
 # Встановлення:
 Для роботи з бібліотекою потрібен Python версії 3.6 або вище.
 
