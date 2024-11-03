@@ -33,38 +33,32 @@ csv_items.ItemManager.load_items()
 3)Виконайте вивід, пошук або фільтрацію:
 
 *Посторінковий вивід (по 10 записів):*
--
-                 -python-
-csv_items.display_items(page_size=10, page_number=1)
-
+```python
+csv_items.display_items(page_size=10, page_number=1) 
+```
 *Фільтрація за ID:*
--
-                 -python-
+```python
 csv_items.display_items(filter_by='ID', filter_value='2')
-
+```
 *Фільтрація за ім'ям:*
--
-                 -python-
+```python
 csv_items.display_items(filter_by='Name', filter_value='Nails')
-
+```
 # Приклади використання:
 Вивід предметів посторінково:
--
-                 -python-
+```python
 csv_items.display_items(page_size=5, page_number=1)
-
+```
 Пошук предмета за ID:
--
-                 -python-
+```python
 items = csv_items.ItemManager.get_item_by_id('1')
 print(items)
-
+```
 Пошук предмета за ім'ям:
--
-                 -python-
+```python
 items = csv_items.ItemManager.search_by_name('Nails')
 print(items)
-
+```
 # Вимоги
 -Python 3.6+
 -Модуль csv (вбудований в стандартну бібліотеку Python)
