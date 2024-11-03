@@ -68,3 +68,22 @@ print(items)
 
 # Автор
 [Шенфельд Вікторія Денисівна]
+
+```mermaid
+classDiagram
+    class CSVReader {
+        +load_items(file_path: str)
+    }
+
+    class ItemManager {
+        +get_item_by_id(item_id: str)
+        +search_by_name(name: str)
+        +display_items(page_size: int, page_number: int, filter_by: str, filter_value: str)
+    }
+
+    class CSVSurvivorItems {
+        +ItemManager
+    }
+
+    CSVSurvivorItems --> ItemManager
+    ItemManager --> CSVReader
