@@ -1,90 +1,103 @@
 # Zomboid
-*Бібліотека CSV Survivor Items*
-Бібліотека для роботи з CSV-файлами, розроблена для виживальників, щоб ефективно керувати списками необхідних предметів. Дозволяє завантажувати дані з CSV-файлів, шукати предмети за ID та іменем, а також виводити їх посторінково з можливістю фільтрації.
 
-# Функціональність:
-1)Читання CSV-файлів з предметами.
+**CSV Survivor Items Library**
 
-2)Пошук предметів за ID та іменем.
+A library for working with CSV files, developed for survivors to efficiently manage lists of necessary items. This library enables loading data from CSV files, searching items by ID and name, and paginated output with filtering options.
 
-3)Посторінковий вивід даних з можливістю фільтрації за ID та іменем.
+## Features:
+1. Reading item data from CSV files.
+2. Searching items by ID and name.
+3. Paginated data display with filtering options by ID and name.
 
-# Структура CSV-файлу:
-CSV-файл повинен мати наступні колонки:
-| ID | Name    | Type       | Condition | Amount |
-|----|---------|------------|-----------|--------|
-| 1  | Hummer  | Tool       | Mint      | 10     |
-| 2  | Nails   | Fasteners  | Good      | 450    |
-| 2  | Nails   | Fasteners  | Bad       | 100    |
-| 3  | Bat     | Weapon     | Bad       | 2      |
-| 4  | Bulb    | Fasteners  | Good      | 15     |
-# Встановлення:
-Для роботи з бібліотекою потрібен Python версії 3.6 або вище.
+## CSV File Structure:
+The CSV file should have the following columns:
 
-Завантажте код проєкту.
-Переконайтесь, що файл *items.csv* знаходиться в одній папці з проєктом або вкажіть шлях до файлу в коді.
+| ID | Name   | Type      | Condition | Amount |
+|----|--------|-----------|-----------|--------|
+| 1  | Hummer | Tool      | Mint      | 10     |
+| 2  | Nails  | Fasteners | Good      | 450    |
+| 2  | Nails  | Fasteners | Bad       | 100    |
+| 3  | Bat    | Weapon    | Bad       | 2      |
+| 4  | Bulb   | Fasteners | Good      | 15     |
 
-# Використання:
-1)Імпортуйте та створіть екземпляр класу CSVSurvivorItems, передавши шлях до CSV-файлу:
-```python
-*csv_items = CSVSurvivorItems('items.csv')*
-```
-2)Завантажте дані:
+## Installation:
+Requires Python version 3.6 or above.
+
+1. Download the project code.
+2. Ensure that the `items.csv` file is in the same directory as the project, or specify its path in the code.
+
+## Usage:
+1. Import and create an instance of the `CSVSurvivorItems` class, passing in the path to the CSV file:
+   ```python
+   csv_items = CSVSurvivorItems('items.csv')
+
+2)Load the data:
 ```python
 csv_items.ItemManager.load_items()
 ```
-3)Виконайте вивід, пошук або фільтрацію:
+3)Display, search, or filter the items:
 
-*Посторінковий вивід (по 10 записів):*
+Paginated display (10 records per page):
 ```python
 csv_items.display_items(page_size=10, page_number=1) 
 ```
-*Фільтрація за ID:*
+Filter by ID:
 ```python
 csv_items.display_items(filter_by='ID', filter_value='2')
 ```
-*Фільтрація за ім'ям:*
+Filter by Name:
 ```python
 csv_items.display_items(filter_by='Name', filter_value='Nails')
 ```
-# Приклади використання:
-Вивід предметів посторінково:
+# Examples:
+Display items in pages:
 ```python
 csv_items.display_items(page_size=5, page_number=1)
 ```
-Пошук предмета за ID:
+Search for an item by ID:
 ```python
 items = csv_items.ItemManager.get_item_by_id('1')
 print(items)
 ```
-Пошук предмета за ім'ям:
+Search for an item by name:
 ```python
 items = csv_items.ItemManager.search_by_name('Nails')
 print(items)
 ```
-# Вимоги
- -Python 3.6+
- 
- -Модуль csv (вбудований в стандартну бібліотеку Python)
+# Requirements:
+-Python 3.6+
+-csv module (part of Python's standard library)
 
-# Автор
-[Шенфельд Вікторія Денисівна]
+# Author
+Shenfeld Victoria Denisovna
 
 ```mermaid
 classDiagram
-    class CSVReader {
-        +load_items(file_path: str)
+    %% CSVSurvivorItems is the main class that uses composition and aggregation to manage items
+
+    class CSVSurvivorItems {
+        +ItemManager itemManager
+        +load_data(file_path: str)
+        +display_items(page_size: int, page_number: int, filter_by: str, filter_value: str)
     }
 
+    %% CSVSurvivorItems contains an ItemManager instance using composition
+    CSVSurvivorItems --> ItemManager : "composition"
+
+    %% ItemManager uses CSVReader as a helper through aggregation
     class ItemManager {
         +get_item_by_id(item_id: str)
         +search_by_name(name: str)
         +display_items(page_size: int, page_number: int, filter_by: str, filter_value: str)
     }
 
-    class CSVSurvivorItems {
-        +ItemManager
+    ItemManager o-- CSVReader : "aggregation"
+
+    %% CSVReader class handles reading the CSV data independently
+    class CSVReader {
+        +load_items(file_path: str)
     }
 
-    CSVSurvivorItems --> ItemManager
-    ItemManager --> CSVReader
+    %% Composition relationship shown with a solid line and filled diamond
+    %% Aggregation relationship shown with an open diamond
+
