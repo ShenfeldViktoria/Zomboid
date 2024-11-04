@@ -68,7 +68,20 @@ print(items)
 -Python 3.6+
 
 -csv module (part of Python's standard library)
+# CSVSurvivorItems
 
+CSVSurvivorItems is a Python library designed to manage essential survival items, with support for CSV files. The library allows for easy expansion to JSON or other formats in the future by creating additional reader classes.
+
+## Future Support for JSON
+The library is structured to support other file formats. To add JSON support, create a `JSONReader` class similar to `CSVReader` and update `CSVSurvivorItems` to use `JSONReader` if a JSON file is specified.
+
+## Example
+```python
+from csv_survivor_items import CSVSurvivorItems
+
+csv_items = CSVSurvivorItems('items.csv')
+csv_items.manager.display_items(page_size=5, page_number=1)
+```
 # Author
 Shenfeld Victoria Denisovna
 
