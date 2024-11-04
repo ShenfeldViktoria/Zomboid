@@ -15,6 +15,7 @@ CSV-файл повинен мати наступні колонки:
 |----|---------|------------|-----------|--------|
 | 1  | Hummer  | Tool       | Mint      | 10     |
 | 2  | Nails   | Fasteners  | Good      | 450    |
+| 2  | Nails   | Fasteners  | Bad       | 100    |
 | 3  | Bat     | Weapon     | Bad       | 2      |
 | 4  | Bulb    | Fasteners  | Good      | 15     |
 # Встановлення:
