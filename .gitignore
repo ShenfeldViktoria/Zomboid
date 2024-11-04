@@ -1,0 +1,13 @@
+# Python specific
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+dist/
+build/
+.venv/
+.vscode/
+.DS_Store
+.env
