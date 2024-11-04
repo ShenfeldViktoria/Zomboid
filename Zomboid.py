@@ -1,150 +1,137 @@
 import csv
 
-class ReaderFile:
-    """
-    Клас ReaderFile відповідає за зчитування CSV-файлів та повернення даних
-    у вигляді списку словників, де кожен словник представляє рядок CSV-файлу.
-    """
-    def read_csv(self, file_path):
-        """
-        Зчитує CSV-файл за вказаним шляхом і повертає дані у вигляді списку словників.
 
-        Параметри:
-            file_path (str): Шлях до CSV-файлу.
+class CSVReader:
+    """
+    A class to read items from a CSV file.
+    """
 
-        Повертає:
-            list[dict]: Список рядків файлу, представлених як словники.
-                        Ключі - це назви колонок, значення - дані в комірках.
+    def load_items(self, file_path: str) -> list:
         """
-        with open(file_path) as file:
+        Load items from a CSV file and return a list of dictionaries.
+
+        Parameters:
+        - file_path (str): Path to the CSV file.
+
+        Returns:
+        - list of dict: List of item dictionaries.
+        """
+        items = []
+        with open(file_path, mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
-            return list(reader)
+            for row in reader:
+                items.append(row)
+        return items
+
+
+class ItemManager:
+    """
+    A class to manage items loaded from a file.
+    Provides functionality to get items by ID, search by name, 
+    and display paginated results.
+    """
+
+    def __init__(self, items=None):
+        self.items = items if items is not None else []
+
+    def get_item_by_id(self, item_id: str) -> dict:
+        """
+        Retrieve an item by its ID.
+
+        Parameters:
+        - item_id (str): The ID of the item.
+
+        Returns:
+        - dict: The item with the specified ID, or None if not found.
+        """
+        return next((item for item in self.items if item['ID'] == item_id), None)
+
+    def search_by_name(self, name: str) -> list:
+        """
+        Search items by name.
+
+        Parameters:
+        - name (str): The name of the item to search.
+
+        Returns:
+        - list: List of items that match the given name.
+        """
+        return [item for item in self.items if item['Name'].lower() == name.lower()]
+
+    def display_items(self, page_size: int = 10, page_number: int = 1) -> None:
+        """
+        Display items in a paginated format.
+
+        Parameters:
+        - page_size (int): Number of items per page.
+        - page_number (int): The page number to display.
+
+        Returns:
+        - None
+        """
+        start = (page_number - 1) * page_size
+        end = start + page_size
+        items_to_display = self.items[start:end]
+
+        if not items_to_display:
+            print("No items to display.")
+            return
+
+        # Define column widths
+        column_widths = {
+            'ID': 5,
+            'Name': 15,
+            'Type': 12,
+            'Condition': 10,
+            'Amount': 8
+        }
+
+        # Print headers
+        headers = list(self.items[0].keys())
+        header_row = " | ".join(f"{header:<{column_widths[header]}}" for header in headers)
+        print(header_row)
+        print("-" * len(header_row))
+
+        # Print each item in a formatted row
+        for item in items_to_display:
+            row = " | ".join(f"{item[key]:<{column_widths[key]}}" for key in headers)
+            print(row)
+
+        print(f"Page {page_number}")
+
 
 class CSVSurvivorItems:
     """
-    Основний клас для роботи з предметами виживальника з CSV-файлу.
-    Дозволяє завантажувати дані, фільтрувати їх та виводити на екран.
-
-    Атрибути:
-        file_path (str): Шлях до CSV-файлу з даними.
-        items (list): Список предметів, завантажених з файлу.
-        reader (ReaderFile): Об'єкт для зчитування CSV-файлу.
-        ItemManager (ItemManager): Вкладений клас для керування предметами.
+    Main class to manage loading and accessing items from a CSV file.
     """
-    def __init__(self, file_path):
+
+    def __init__(self, file_path: str):
         """
-        Ініціалізація об'єкта CSVSurvivorItems.
+        Initialize the CSVSurvivorItems with a file path.
 
-        Параметри:
-            file_path (str): Шлях до CSV-файлу з даними.
+        Parameters:
+        - file_path (str): Path to the CSV file containing items.
         """
-        self.file_path = file_path
-        self.items = []  # Список для зберігання всіх предметів після завантаження
-        self.reader = ReaderFile()  # Створюємо об'єкт для зчитування CSV
-        self.ItemManager = self.ItemManager(self)  # Створюємо об'єкт для керування предметами
+        self.reader = CSVReader()
+        self.items = self.reader.load_items(file_path)
+        self.manager = ItemManager(self.items)
 
-    class ItemManager:
-        """
-        Вкладений клас для керування предметами: завантаження, пошук за ID та за ім'ям.
-        Дозволяє обробляти дані та фільтрувати їх за критеріями.
-        """
-        def __init__(self, csv_survivor):
-            """
-            Ініціалізація об'єкта ItemManager.
 
-            Параметри:
-                csv_survivor (CSVSurvivorItems): Зовнішній об'єкт CSVSurvivorItems для доступу до його даних.
-            """
-            self.csv_survivor = csv_survivor
+# Example usage of the program
+if __name__ == "__main__":
+    # Initialize the CSVSurvivorItems with a path to a CSV file
+    csv_items = CSVSurvivorItems('items.csv')
 
-        def load_items(self):
-            """
-            Завантажує всі предмети з CSV-файлу та зберігає їх в атрибут items
-            зовнішнього об'єкта CSVSurvivorItems. Дублікати рядків не видаляються.
-            """
-            self.csv_survivor.items = self.csv_survivor.reader.read_csv(self.csv_survivor.file_path)
+    # Display items in pages
+    print("Displaying page 1:")
+    csv_items.manager.display_items(page_size=5, page_number=1)
 
-        def get_item_by_id(self, item_id):
-            """
-            Шукає предмети за вказаним ID.
+    # Retrieve an item by ID
+    item = csv_items.manager.get_item_by_id('1')
+    print("\nItem with ID 1:", item)
 
-            Параметри:
-                item_id (str): Ідентифікатор предмета для пошуку.
-
-            Повертає:
-                list[dict]: Список всіх предметів з вказаним ID.
-            """
-            return [item for item in self.csv_survivor.items if item['ID'] == str(item_id)]
-
-        def search_by_name(self, name):
-            """
-            Виконує пошук предметів за назвою.
-
-            Параметри:
-                name (str): Назва або частина назви предмета для пошуку.
-
-            Повертає:
-                list[dict]: Список всіх предметів, які містять вказану назву або її частину.
-            """
-            return [item for item in self.csv_survivor.items if name.lower() in item['Name'].lower()]
-
-    def display_items(self, page_size=10, page_number=1, filter_by=None, filter_value=None):
-        """
-        Виводить предмети посторінково з можливістю фільтрації за ID або назвою.
-
-        Параметри:
-            page_size (int): Кількість предметів на сторінці (за замовчуванням 10).
-            page_number (int): Номер сторінки для відображення.
-            filter_by (str): Поле для фільтрації ('ID' або 'Name').
-            filter_value (str): Значення для фільтрації (наприклад, '2' для ID або 'Nails' для Name).
-        """
-        
-        # Фільтрація предметів, якщо задані критерії
-        if filter_by and filter_value:
-            items_to_display = [
-                item for item in self.items
-                if str(item.get(filter_by, "")).lower() == str(filter_value).lower()
-            ]
-        else:
-            # Визначаємо діапазон даних для відображення на вказаній сторінці
-            start = (page_number - 1) * page_size
-            end = start + page_size
-            items_to_display = self.items[start:end]
-        
-        if items_to_display:
-            # Налаштування ширини колонок для форматованого виводу
-            column_widths = {
-                'ID': 5,
-                'Name': 20,
-                'Type': 15,
-                'Condition': 10,
-                'Amount': 7
-            }
-            
-            # Друк заголовків таблиці
-            header = f"{'ID'.ljust(column_widths['ID'])} | {'Name'.ljust(column_widths['Name'])} | {'Type'.ljust(column_widths['Type'])} | {'Condition'.ljust(column_widths['Condition'])} | {'Amount'.ljust(column_widths['Amount'])}"
-            print(header)
-            print('-' * len(header))
-
-            # Друк рядків з даними
-            for item in items_to_display:
-                row = f"{item['ID'].ljust(column_widths['ID'])} | {item['Name'].ljust(column_widths['Name'])} | {item['Type'].ljust(column_widths['Type'])} | {item['Condition'].ljust(column_widths['Condition'])} | {item['Amount'].ljust(column_widths['Amount'])}"
-                print(row)
-        else:
-            print("Немає предметів для відображення за заданими критеріями.")
-
-# Приклад використання програми
-file_path = 'items.csv'
-csv_items = CSVSurvivorItems(file_path)
-
-# Завантажуємо предмети з файлу
-csv_items.ItemManager.load_items()
-
-# Виводимо предмети з фільтрацією за ID
-csv_items.display_items(filter_by='ID', filter_value='2')
-
-# Виводимо предмети з фільтрацією за назвою
-csv_items.display_items(filter_by='Name', filter_value='Nails')
-
-# Виводимо предмети посторінково (без фільтрації)
-csv_items.display_items(page_size=10, page_number=1)
+    # Search for items by name
+    nails = csv_items.manager.search_by_name('Nails')
+    print("\nItems with name 'Nails':")
+    for nail in nails:
+        print(nail)
