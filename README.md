@@ -81,9 +81,10 @@ python Zomboid.py items.csv --condition-percentage
 Output :
 ``` markdown
 Percentage distribution by condition for all items:
-Mint — 25.00%
-Good — 50.00%
-Bad — 25.00%
+Mint — 20.00%
+Good — 40.00%
+Average — 0.00%
+Bad — 40.00%
 ```
 5. Analyze Conditions by Name
 ``` bash
@@ -92,8 +93,10 @@ python Zomboid.py items.csv --condition-percentage-name "Nails"
 Output :
 ``` markdown
 Percentage distribution by condition for items named 'Nails':
-Good — 81.82%
-Bad — 18.18%
+Mint — 0.00%
+Good — 50.00%
+Average — 0.00%
+Bad — 50.00%
 ```
 ## Error Handling
 1. If the provided file_path is invalid or the file is not formatted correctly, the program will terminate with an error message.
